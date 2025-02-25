@@ -1,5 +1,6 @@
 import operator
 import string
+import sys
 from pathlib import Path
 
 
@@ -37,18 +38,25 @@ class Book:
         )
 
     def report(self) -> None:
-        print(f"--- Begin report of {self.path.relative_to('.')} ---")
-        print(f"{self.word_count()} words found in the document")
-        print()
-        for c, count in self.char_counts_lower_sorted_tuples():
-            print(f"The '{c}' character was found {count} times")
-        print("--- End report ---")
+        print("============ BOOKBOT ============")
+        print(f"Analyzing book found at {self.path.relative_to('.')}...")
+        print("----------- Word Count ----------")
+        print(f"Found {self.word_count()} total words")
+        print("--------- Character Count -------")
+        for c, count in self.char_counts_lower_sorted_tuples(reverse=True):
+            print(f"{c}: {count}")
+        print("============= END ===============")
 
 
-def main():
-    frankenstein = Book(Path("./books/frankenstein.txt"))
-    frankenstein.report()
+def main(args: list[str]) -> int:
+    # ensure an arg has been provided
+    if not len(args):
+        print("Usage: python3 main.py <path_to_book>")
+        return 1
+    # load the book and print the report
+    Book(Path(args[0])).report()
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main(sys.argv[1:]))
